@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect, useCallback } from "react";
 
 export default function HomePage() {
@@ -109,7 +108,9 @@ export default function HomePage() {
         <div className="text-center mb-4">
           <div className="inline-flex items-center gap-2 mb-2">
             <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-pink-400 rounded-full flex items-center justify-center shadow-lg">
-              <span className="text-white text-lg">🌅</span>
+              <span className="text-white text-lg">
+                <img src="/icon.svg" alt="Logo" />
+              </span>
             </div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
               每日晨图
@@ -158,8 +159,8 @@ export default function HomePage() {
                     alt="AI Generated Morning Picture"
                     className="w-full h-auto max-h-96 transition-transform duration-300"
                   />
-                  <div className="absolute top-3 right-3">
-                    <div className="bg-black/60 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full">
+                  <div className="absolute bottom-3 left-3">
+                    <div className="bg-black/50 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full opacity-80">
                       {cacheStatus === "HIT"
                         ? "☕️ 缓存"
                         : cacheStatus === "REGENERATED"
