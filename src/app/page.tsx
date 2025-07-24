@@ -7,6 +7,8 @@ export default function HomePage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [cacheStatus, setCacheStatus] = useState<string>("");
+  const [showCustomPrompt, setShowCustomPrompt] = useState<boolean>(false);
+  const [customPrompt, setCustomPrompt] = useState<string>("");
 
   const fetchImage = useCallback(async () => {
     setLoading(true);
@@ -36,15 +38,27 @@ export default function HomePage() {
         URL.revokeObjectURL(imageUrl);
       }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetchImage]);
 
   const handleRegenerate = async () => {
     setLoading(true);
     try {
-      await fetch("/api/regenerate", { method: "POST" });
+      const requestBody = customPrompt.trim()
+        ? { customPrompt: customPrompt.trim() }
+        : {};
+      await fetch("/api/regenerate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
       // After clearing cache, fetch a new image
       await fetchImage();
+      // Clear custom prompt after successful generation
+      setCustomPrompt("");
+      setShowCustomPrompt(false);
     } catch (e: any) {
       setError("重新生成失败，请稍后再试。");
       console.error(e);
@@ -72,9 +86,9 @@ export default function HomePage() {
 
   const downloadImage = () => {
     if (imageUrl) {
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = imageUrl;
-      link.download = `morning-pic-${today.toISOString().split('T')[0]}.png`;
+      link.download = `morning-pic-${today.toISOString().split("T")[0]}.png`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -101,8 +115,12 @@ export default function HomePage() {
               每日晨图
             </h1>
           </div>
-          <p className="text-base text-gray-700 font-medium">{timeGreeting()}！</p>
-          <p className="text-xs text-gray-500">{formattedDate} · {weekday}</p>
+          <p className="text-base text-gray-700 font-medium">
+            {timeGreeting()}！
+          </p>
+          <p className="text-xs text-gray-500">
+            {formattedDate} · {weekday}
+          </p>
         </div>
 
         {/* Main card */}
@@ -115,7 +133,9 @@ export default function HomePage() {
                   <div className="w-12 h-12 border-3 border-pink-200 border-t-pink-500 rounded-full animate-spin"></div>
                   <div className="absolute inset-0 w-12 h-12 border-3 border-transparent border-r-blue-500 rounded-full animate-spin animation-delay-150"></div>
                 </div>
-                <p className="mt-3 text-sm text-gray-600 font-medium animate-pulse">正在生成晨图...</p>
+                <p className="mt-3 text-sm text-gray-600 font-medium animate-pulse">
+                  正在生成晨图...
+                </p>
               </div>
             ) : error ? (
               <div className="flex flex-col items-center justify-center h-80 bg-gradient-to-br from-red-50 to-pink-50 text-center p-6">
@@ -123,7 +143,7 @@ export default function HomePage() {
                   <span className="text-lg">😔</span>
                 </div>
                 <p className="text-red-600 font-medium text-sm">{error}</p>
-                <button 
+                <button
                   onClick={fetchImage}
                   className="mt-3 px-4 py-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors text-sm"
                 >
@@ -140,7 +160,11 @@ export default function HomePage() {
                   />
                   <div className="absolute top-3 right-3">
                     <div className="bg-black/60 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full">
-                      {cacheStatus === "HIT" ? "💾 缓存" : cacheStatus === "REGENERATED" ? "🆕 重新生成" : "✨ 新生成"}
+                      {cacheStatus === "HIT"
+                        ? "☕️ 缓存"
+                        : cacheStatus === "REGENERATED"
+                        ? "🆕 重新生成"
+                        : "✨ 新生成"}
                     </div>
                   </div>
                 </>
@@ -151,7 +175,7 @@ export default function HomePage() {
           {/* Action area */}
           <div className="p-4 space-y-3">
             <div className="flex gap-2">
-              <button 
+              <button
                 onClick={handleRegenerate}
                 disabled={loading}
                 className="flex-1 bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 disabled:from-gray-300 disabled:to-gray-400 text-white font-bold py-2.5 px-4 rounded-xl transition-all duration-300 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 disabled:transform-none text-sm"
@@ -167,21 +191,54 @@ export default function HomePage() {
                   </span>
                 )}
               </button>
-              
+
               {imageUrl && !loading && (
-                <button 
-                  onClick={downloadImage}
-                  className="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-bold py-2.5 px-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm"
-                >
-                  📥
-                </button>
+                <>
+                  <button
+                    title="✏️ 自定义描述"
+                    onClick={() => setShowCustomPrompt(!showCustomPrompt)}
+                    className="bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white font-bold py-2.5 px-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm"
+                  >
+                    ✏️
+                  </button>
+
+                  {/* <button 
+                    onClick={downloadImage}
+                    className="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-bold py-2.5 px-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm"
+                  >
+                    📥
+                  </button> */}
+                </>
               )}
             </div>
-            
+
+            {/* Custom Prompt Input */}
+            {showCustomPrompt && !loading && (
+              <div className="space-y-2 animate-in slide-in-from-top-2 duration-200">
+                <label className="block text-sm font-medium text-gray-700">
+                  ✏️ 自定义描述 (可选)
+                </label>
+                <textarea
+                  value={customPrompt}
+                  onChange={(e) => setCustomPrompt(e.target.value)}
+                  placeholder="输入您希望在图片中体现的特殊要求，例如：希望有猫咪、加入樱花元素、使用卡通风格等..."
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm text-gray-900"
+                  rows={3}
+                  maxLength={200}
+                />
+                <div className="flex justify-between items-center text-xs text-gray-500">
+                  <span>💡 您的描述将添加到AI生成提示中</span>
+                  <span>{customPrompt.length}/200</span>
+                </div>
+              </div>
+            )}
+
             {imageUrl && !loading && (
               <div className="text-center">
                 <p className="text-xs text-gray-500">
-                  点击重新生成获取新晨图，或下载保存当前图片
+                  {showCustomPrompt
+                    ? "✏️ 添加自定义描述后点击重新生成，或直接下载当前图片"
+                    : "点击重新生成获取新晨图，✏️ 自定义描述，或下载保存当前图片"}
                 </p>
               </div>
             )}

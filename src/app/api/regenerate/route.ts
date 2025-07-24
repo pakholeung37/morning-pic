@@ -1,11 +1,21 @@
 import { NextResponse } from "next/server";
 import { generateImage } from "@/lib/image-generator";
 
-export async function POST() {
+export async function POST(request: Request) {
   console.log(`🔄 [API] POST /api/regenerate - Force regeneration requested`);
   
   try {
-    const { imageBuffer, cacheStatus } = await generateImage({ forceRegenerate: true });
+    const body = await request.json().catch(() => ({}));
+    const { customPrompt } = body;
+    
+    if (customPrompt) {
+      console.log(`✏️ [API] Custom prompt received: ${customPrompt}`);
+    }
+    
+    const { imageBuffer, cacheStatus } = await generateImage({ 
+      forceRegenerate: true,
+      customPrompt 
+    });
     
     const imageSizeKB = Math.round(imageBuffer.length / 1024);
     console.log(`✅ [API] Image regeneration successful - Status: ${cacheStatus}, Size: ${imageSizeKB}KB`);
