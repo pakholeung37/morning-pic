@@ -106,8 +106,8 @@ export default function HomePage() {
       <div className="relative w-full max-w-md mx-auto">
         {/* Header */}
         <div className="text-center mb-4">
-          <div className="inline-flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-pink-400 rounded-full flex items-center justify-center shadow-lg">
+          <div className="flex items-center justify-center mb-2">
+            <div className="w-8 h-8 bg-gradient-to-r from-orange-400 to-pink-400 rounded-full flex items-center justify-center shadow-lg mr-2">
               <span className="text-white text-lg">
                 <img src="/icon.svg" alt="Logo" />
               </span>
@@ -115,6 +115,7 @@ export default function HomePage() {
             <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
               每日晨图
             </h1>
+            <div className="w-8 h-8 ml-2"></div>
           </div>
           <p className="text-base text-gray-700 font-medium">
             {timeGreeting()}！
@@ -198,7 +199,7 @@ export default function HomePage() {
                   <button
                     title="✏️ 自定义描述"
                     onClick={() => setShowCustomPrompt(!showCustomPrompt)}
-                    className="bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white font-bold py-2.5 px-4 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm"
+                    className="w-11 h-11 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm flex items-center justify-center"
                   >
                     ✏️
                   </button>
