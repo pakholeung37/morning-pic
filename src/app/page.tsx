@@ -113,7 +113,7 @@ export default function HomePage() {
               </span>
             </div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
-              每日晨图
+              每日早安图
             </h1>
             <div className="w-8 h-8 ml-2"></div>
           </div>
@@ -136,7 +136,7 @@ export default function HomePage() {
                   <div className="absolute inset-0 w-12 h-12 border-3 border-transparent border-r-blue-500 rounded-full animate-spin animation-delay-150"></div>
                 </div>
                 <p className="mt-3 text-sm text-gray-600 font-medium animate-pulse">
-                  正在生成晨图...
+                  正在生成早安图...
                 </p>
               </div>
             ) : error ? (
@@ -240,7 +240,7 @@ export default function HomePage() {
                 <p className="text-xs text-gray-500">
                   {showCustomPrompt
                     ? "✏️ 添加自定义描述后点击重新生成，或直接下载当前图片"
-                    : "点击重新生成获取新晨图，✏️ 自定义描述，或下载保存当前图片"}
+                    : "点击重新生成获取新早安图，✏️ 自定义描述，或下载保存当前图片"}
                 </p>
               </div>
             )}
@@ -250,7 +250,7 @@ export default function HomePage() {
         {/* Footer */}
         <div className="text-center mt-4">
           <p className="text-xs text-gray-500">
-            ✨ 每天为您生成独特的AI晨图，开启美好的一天
+            ✨ 每天为您生成独特的AI早安图，开启美好的一天
           </p>
         </div>
       </div>
