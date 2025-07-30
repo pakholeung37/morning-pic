@@ -1,15 +1,29 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { loadSlim } from "@tsparticles/slim";
 import type { Container, ISourceOptions } from "@tsparticles/engine";
 
 export default function ParticleBackground() {
+  const [init, setInit] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
   useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
     initParticlesEngine(async (engine) => {
       await loadSlim(engine);
+    }).then(() => {
+      setInit(true);
     });
+
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   const particlesLoaded = async (container?: Container): Promise<void> => {
@@ -34,27 +48,36 @@ export default function ParticleBackground() {
             enable: true,
             mode: "repulse",
           },
+          resize: {
+            enable: true,
+          },
         },
         modes: {
           push: {
-            quantity: 3,
+            quantity: isMobile ? 2 : 4,
           },
           repulse: {
-            distance: 100,
-            duration: 0.4,
+            distance: isMobile ? 80 : 120,
+            duration: 0.6,
+            easing: "ease-out-quad",
           },
         },
       },
       particles: {
         color: {
-          value: ["#F97316", "#EC4899", "#8B5CF6", "#F59E0B", "#EF4444"],
+          value: ["#F97316", "#EC4899", "#8B5CF6", "#F59E0B", "#EF4444", "#10B981"],
         },
         links: {
           color: "#F97316",
-          distance: 150,
+          distance: isMobile ? 120 : 150,
           enable: true,
-          opacity: 0.4,
-          width: 1.5,
+          opacity: 0.5,
+          width: 1.2,
+          triangles: {
+            enable: true,
+            color: "#F97316",
+            opacity: 0.1,
+          },
         },
         move: {
           direction: "none",
@@ -63,49 +86,112 @@ export default function ParticleBackground() {
             default: "bounce",
           },
           random: true,
-          speed: 2,
+          speed: isMobile ? 1.5 : 2,
           straight: false,
+          attract: {
+            enable: true,
+            rotate: {
+              x: 600,
+              y: 1200,
+            },
+          },
         },
         number: {
           density: {
             enable: true,
+            width: 1920,
+            height: 1080,
           },
-          value: 60,
+          value: isMobile ? 40 : 70,
         },
         opacity: {
-          value: 0.6,
-          random: true,
+          value: { min: 0.3, max: 0.7 },
+          random: {
+            enable: true,
+            minimumValue: 0.3,
+          },
           animation: {
             enable: true,
-            speed: 1,
-            minimumValue: 0.3,
+            speed: 1.5,
+            minimumValue: 0.2,
+            sync: false,
           },
         },
         shape: {
-          type: "circle",
+          type: ["circle", "triangle"],
+          triangle: {
+            sides: 3,
+          },
         },
         size: {
-          value: { min: 2, max: 6 },
-          random: true,
+          value: { min: isMobile ? 1.5 : 2, max: isMobile ? 4 : 6 },
+          random: {
+            enable: true,
+            minimumValue: 1,
+          },
           animation: {
             enable: true,
-            speed: 2,
-            minimumValue: 1,
+            speed: 3,
+            minimumValue: 0.5,
+            sync: false,
+          },
+        },
+        twinkle: {
+          particles: {
+            enable: true,
+            frequency: 0.05,
+            opacity: 1,
           },
         },
       },
       detectRetina: true,
+      responsive: [
+        {
+          maxWidth: 768,
+          options: {
+            particles: {
+              number: {
+                value: 30,
+              },
+              move: {
+                speed: 1,
+              },
+            },
+          },
+        },
+        {
+          maxWidth: 480,
+          options: {
+            particles: {
+              number: {
+                value: 20,
+              },
+              move: {
+                speed: 0.8,
+              },
+            },
+          },
+        },
+      ],
     }),
-    []
+    [isMobile]
   );
 
+  if (!init) {
+    return null;
+  }
+
   return (
-    <div className="absolute inset-0 -z-10">
+    <div className="absolute inset-0 -z-10 pointer-events-none">
       <Particles
         id="tsparticles"
         particlesLoaded={particlesLoaded}
         options={options}
-        className="absolute inset-0"
+        className="absolute inset-0 pointer-events-auto"
+        style={{ 
+          pointerEvents: 'auto',
+          zIndex: -1,
+        }}
       />
     </div>
   );
