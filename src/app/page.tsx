@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
+import ParticleBackground from "@/components/ParticleBackground";
 
 export default function HomePage() {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -95,12 +96,15 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-200 via-pink-200 to-indigo-100 flex items-center justify-center p-2">
-      {/* Background decoration */}
+    <div className="min-h-screen bg-gradient-to-br from-orange-100/80 via-pink-100/80 to-indigo-50/80 flex items-center justify-center p-2 relative">
+      {/* Dynamic Particle Background */}
+      <ParticleBackground />
+      
+      {/* Background decoration - keeping some original decorative elements but more subtle */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-10 left-10 w-48 h-48 bg-yellow-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
-        <div className="absolute top-20 right-10 w-56 h-56 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse delay-1000"></div>
-        <div className="absolute bottom-10 left-20 w-52 h-52 bg-purple-200 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse delay-2000"></div>
+        <div className="absolute top-10 left-10 w-48 h-48 bg-yellow-200/20 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse"></div>
+        <div className="absolute top-20 right-10 w-56 h-56 bg-pink-200/20 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse delay-1000"></div>
+        <div className="absolute bottom-10 left-20 w-52 h-52 bg-purple-200/20 rounded-full mix-blend-multiply filter blur-xl opacity-30 animate-pulse delay-2000"></div>
       </div>
 
       <div className="relative w-full max-w-md mx-auto">
